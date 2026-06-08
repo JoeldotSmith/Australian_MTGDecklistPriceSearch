@@ -1,0 +1,346 @@
+import re
+import argparse
+import urllib.parse
+import subprocess
+import time
+from itertools import combinations
+
+from models import CardResult
+import goodgames
+import mtgmate
+   # cents
+POSTAGE = {
+    "goodgames": 6_50,
+    "mtgmate":   6_00,
+}
+
+def optimise_order(
+    cards: list[str],
+    gg_results: dict[str, CardResult],
+    mm_results: dict[str, CardResult],
+    excluded_cards: set[str],  # cards filtered out or not found — skip these
+) -> None:
+    """
+    Find the cheapest combination of vendors (including postage) to source
+    as many of the remaining cards as possible.
+    Prints a breakdown table per vendor for the best solution found.
+    """
+    vendor_results = {
+        "goodgames": gg_results,
+        "mtgmate":   mm_results,
+    }
+    vendor_names = list(vendor_results.keys())
+
+    # Only consider cards that are actually purchaseable
+    active_cards = [c for c in cards if c.lower() not in excluded_cards]
+
+    # Cards available on at least one vendor
+    sourceable = {
+        c for c in active_cards
+        if any(c.lower() in vendor_results[v] for v in vendor_names)
+    }
+
+    best_cost    = None
+    best_config  = None  # dict: card_lower -> vendor_name
+
+    # Try every non-empty subset of vendors
+    for r in range(1, len(vendor_names) + 1):
+        for vendor_subset in combinations(vendor_names, r):
+            subset_set = set(vendor_subset)
+
+            config = {}
+            for card in sourceable:
+                key = card.lower()
+                cheapest_vendor = None
+                cheapest_price  = None
+                for v in vendor_subset:
+                    result = vendor_results[v].get(key)
+                    if result is not None:
+                        if cheapest_price is None or result.price_cents < cheapest_price:
+                            cheapest_price  = result.price_cents
+                            cheapest_vendor = v
+                if cheapest_vendor:
+                    config[key] = cheapest_vendor
+
+            # Total cost = sum of card prices + postage for each vendor used
+            vendors_used = set(config.values())
+            card_total   = sum(vendor_results[v][k].price_cents for k, v in config.items())
+            postage_total = sum(POSTAGE[v] for v in vendors_used)
+            total = card_total + postage_total
+
+            if best_cost is None or total < best_cost:
+                best_cost   = total
+                best_config = config
+
+    if not best_config:
+        print("\nNo cards could be sourced from any vendor.")
+        return
+
+    # Group best_config by vendor
+    vendor_cards: dict[str, list[str]] = {v: [] for v in vendor_names}
+    for card_lower, vendor in best_config.items():
+        vendor_cards[vendor].append(card_lower)
+
+    unsourceable = [c for c in active_cards if c.lower() not in best_config]
+
+    print("\n" + "═" * 60)
+    print(f"  OPTIMAL ORDER  —  total incl. postage: ${best_cost / 100:.2f}")
+    print("═" * 60)
+
+    for vendor in vendor_names:
+        card_list = vendor_cards[vendor]
+        if not card_list:
+            continue
+
+        results    = vendor_results[vendor]
+        postage    = POSTAGE[vendor]
+        cards_cost = sum(results[k].price_cents for k in card_list)
+        order_total = cards_cost + postage
+
+        # Build display rows
+        rows = []
+        for card_lower in sorted(card_list, key=lambda k: results[k].price_cents):
+            r = results[card_lower]
+            rows.append((r.card_name, r.set_name, r.condition, str(r.qty), f"${r.price_cents / 100:.2f}"))
+
+        _draw_order_table(
+            title=f"Order from {vendor.title()}",
+            rows=rows,
+            postage=postage,
+            cards_total=cards_cost,
+            order_total=order_total,
+        )
+
+    if unsourceable:
+        print(f"\n── Still unavailable ({len(unsourceable)}/{len(cards)}) ──")
+        for c in unsourceable:
+            print(f"  1 {c}")
+
+
+def _draw_order_table(
+    title: str,
+    rows: list[tuple],
+    postage: int,
+    cards_total: int,
+    order_total: int,
+) -> None:
+    headers = ("Card Title", "Set", "Condition", "Qty", "Price")
+    col_widths = [len(h) for h in headers]
+    for row in rows:
+        for i, cell in enumerate(row):
+            col_widths[i] = max(col_widths[i], len(cell))
+    col_widths = [w + 2 for w in col_widths]
+
+    def format_row(row):
+        return (
+            "│ "
+            + " │ ".join(
+                cell.ljust(col_widths[i]) if i < len(row) - 1 else cell.rjust(col_widths[i])
+                for i, cell in enumerate(row)
+            )
+            + " │"
+        )
+
+    def divider(left, mid, right):
+        return left + mid.join("─" * (w + 2) for w in col_widths) + right
+
+    total_width = sum(col_widths) + 3 * len(col_widths) + 1
+    title_padded = f" {title} ({len(rows)} cards) ".center(total_width - 2)
+
+    print()
+    print("┌" + title_padded + "┐")
+    print(divider("├", "┬", "┤"))
+    print(format_row(headers))
+    print(divider("├", "┼", "┤"))
+    for row in rows:
+        print(format_row(row))
+    print(divider("├", "┼", "┤"))
+    print(format_row(("", "", "", "Cards",   f"${cards_total / 100:.2f}")))
+    print(format_row(("", "", "", "Post", f"${postage / 100:.2f}")))
+    print(divider("├", "┼", "┤"))
+    print(format_row(("", "", "", "Total",   f"${order_total / 100:.2f}")))
+    print(divider("└", "┴", "┘"))
+
+def get_cards(decklist_file: str) -> list[str]:
+    cards = []
+    with open(decklist_file, "r") as f:
+        for line in f:
+            line = line.strip()
+            if line:
+                card_name = re.sub(r"^\d+\s+", "", line)
+                cards.append(card_name)
+    return cards
+
+
+def merge(
+    cards: list[str],
+    gg_results: dict[str, CardResult],
+    gg_nm: dict[str, int],
+    mm_results: dict[str, CardResult],
+) -> tuple[list[dict], list[str]]:
+    """
+    For each card pick the cheapest source, annotate with source label.
+    Returns:
+      rows      : list of dicts ready for display/filtering
+      not_found : list of card names unavailable on either site
+    """
+    rows = []
+    not_found = []
+
+    for card_name in cards:
+        key = card_name.lower()
+        gg = gg_results.get(key)
+        mm = mm_results.get(key)
+
+        if gg is None and mm is None:
+            not_found.append(card_name)
+            continue
+
+        # Pick cheapest
+        if gg is not None and (mm is None or gg.price_cents <= mm.price_cents):
+            best = gg
+            source = "GoodGames"
+        else:
+            best = mm
+            source = "MtgMate"
+
+        nm_cents = gg_nm.get(key)
+        nm_str = f"${nm_cents / 100:.2f}" if nm_cents is not None else "N/A"
+        diff = (best.price_cents - nm_cents) / 100 if nm_cents is not None else 0
+        sign = "+" if diff >= 0 else "-"
+
+        rows.append({
+            "title":     best.card_name,
+            "set":       best.set_name,
+            "condition": best.condition,
+            "qty":       str(best.qty),
+            "price":     best.price_cents,
+            "price_str": f"${best.price_cents / 100:.2f}",
+            "nm_str":    nm_str,
+            "diff_str":  f"{sign}${abs(diff):.2f}",
+            "source":    source,
+            "url":       best.url,
+        })
+
+    rows.sort(key=lambda r: r["price"])
+    return rows, not_found
+
+
+def apply_filters(
+    rows: list[dict],
+    filter_price: float | None,
+    filter_diff: float | None,
+) -> tuple[list[dict], list[dict]]:
+    main_rows = rows
+    over_rows = []
+
+    if filter_price is not None:
+        threshold = int(filter_price * 100)
+        over_rows  += [r for r in main_rows if r["price"] >= threshold]
+        main_rows   = [r for r in main_rows if r["price"] <  threshold]
+
+    if filter_diff is not None:
+        threshold = int(filter_diff * 100)
+        over_rows  += [r for r in main_rows if _diff_cents(r["diff_str"]) >= threshold]
+        main_rows   = [r for r in main_rows if _diff_cents(r["diff_str"]) <  threshold]
+
+    return main_rows, over_rows
+
+
+def _diff_cents(diff_str: str) -> int:
+    return int(diff_str.replace("+", "").replace("-", "").replace("$", "").replace(".", ""))
+
+
+def draw_table(title_str: str, rows: list[dict], total_cards: int) -> None:
+    if not rows:
+        return
+
+    headers = ("Card Title", "Set", "Condition", "Qty", "Cheapest Available", "Cheapest NM", "Diff", "Source")
+    display = [
+        (r["title"], r["set"], r["condition"], r["qty"], r["price_str"], r["nm_str"], r["diff_str"], r["source"])
+        for r in rows
+    ]
+
+    col_widths = [len(h) for h in headers]
+    for row in display:
+        for i, cell in enumerate(row):
+            col_widths[i] = max(col_widths[i], len(cell))
+    col_widths = [w + 2 for w in col_widths]
+
+    def format_row(row):
+        return (
+            "│ "
+            + " │ ".join(
+                cell.ljust(col_widths[i]) if i < len(row) - 1 else cell.rjust(col_widths[i])
+                for i, cell in enumerate(row)
+            )
+            + " │"
+        )
+
+    def divider(left, mid, right):
+        return left + mid.join("─" * (w + 2) for w in col_widths) + right
+
+    total_width = sum(col_widths) + 3 * len(col_widths) + 1
+    title_padded = f" {title_str} ({len(rows)}/{total_cards} cards) ".center(total_width - 2)
+
+    print()
+    print("┌" + title_padded + "┐")
+    print(divider("├", "┬", "┤"))
+    print(format_row(headers))
+    print(divider("├", "┼", "┤"))
+    for row in display:
+        print(format_row(row))
+    print(divider("├", "┼", "┤"))
+
+    total_price = sum(r["price"] for r in rows)
+    total_nm = sum(
+        int(r["nm_str"].replace("$", "").replace(".", ""))
+        for r in rows if r["nm_str"] != "N/A"
+    )
+    total_row = ("", "", "", "Total", f"${total_price / 100:.2f}", f"${total_nm / 100:.2f}", "", "")
+    print(format_row(total_row))
+    print(divider("└", "┴", "┘"))
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--filter-price", type=float, default=None)
+    parser.add_argument("--filter-diff",  type=float, default=None)
+    parser.add_argument("--open", action="store_true")
+    args = parser.parse_args()
+
+    cards = get_cards("decklist.txt")
+    print(f"Total cards: {len(cards)}\n")
+
+    mm_results = mtgmate.fetch_all(cards)
+    print()
+    gg_results, gg_nm = goodgames.fetch_all(cards)
+
+    rows, not_found = merge(cards, gg_results, gg_nm, mm_results)
+    main_rows, over_rows = apply_filters(rows, args.filter_price, args.filter_diff)
+
+    draw_table("MTG Card Price Search — GoodGames + MTGMate", main_rows, len(cards))
+    if over_rows:
+        draw_table("Filtered Out", over_rows, len(cards))
+
+    if args.open and main_rows:
+        print("\nOpening results in browser...")
+        for r in main_rows:
+            if r["url"]:
+                subprocess.run(["open", r["url"]])
+                time.sleep(0.3)
+
+    if not_found:
+        print(f"\n── Not Found / Out of Stock [{len(not_found)}/{len(cards)}] ──")
+        for card in not_found:
+            print(f"  1 {card}")
+
+    excluded = set(r.lower() for r in not_found)
+    if args.filter_price is not None or args.filter_diff is not None:
+        excluded |= {r["title"].lower() for r in over_rows}
+
+    optimise_order(cards, gg_results, mm_results, excluded)
+
+
+if __name__ == "__main__":
+    main()

@@ -1,82 +1,51 @@
-1 Hogaak, Arisen Necropolis
-1 Aatchik, Emerald Radian
-1 Accursed Marauder
-1 Arasta of the Endless Web
-1 Arbor Elf
-1 Arcane Signet
-1 Bastion of Remembrance
-1 Binding the Old Gods
-1 Blanchwood Prowler
-1 Blighted Woodland
-1 Cache Grab
-1 Circle of the Land Druid
-1 Command Tower
-1 Commune with the Gods
-1 Crawling Sensation
-1 Demon's Disciple
-1 Demonic Embrace
-1 Disciple of Bolas
-1 Drag to the Roots
-1 Dread Return
-1 Dread Summons
-1 Dryad's Revival
-1 Elvish Mystic
-1 Exotic Orchard
-1 Fallen Ideal
-1 Festering Thicket
-1 Fleshbag Marauder
-12 Forest
-1 Golgari Grave-Troll
-1 Golgari Rot Farm
-1 Golgari Signet
-1 Grisly Salvage
-1 Haunted Mire
-1 Hissing Quagmire
-1 Izoni, Thousand-Eyed
-1 Jungle Hollow
-1 Korozda Guildmage
-1 Lasyd Prowler
-1 Llanowar Wastes
-1 Lluwen, Imperfect Naturalist
-1 Maelstrom Pulse
-1 Merciless Executioner
-1 Midnight Tilling
-1 Molt Tender
-1 Morbid Opportunist
-1 Necroblossom Snarl
-1 Nyx Weaver
-1 Plaguecrafter
-1 Rampant Growth
-1 Regrowth
-1 Rogue's Passage
-1 Satyr Wayfinder
-1 Seedship Broodtender
-1 Shamanic Revelation
-1 Skull Prophet
-8 Snow-Covered Swamp
-1 Sol Ring
-1 Spider Spawning
-1 Spry and Mighty
-1 Stitcher's Supplier
-1 Syr Konrad, the Grim
-1 Szat's Will
-1 Tainted Wood
-1 Talisman of Resilience
-1 Temple of Malady
-1 Tend the Pests
-1 The Binding of the Titans
-1 Town Greeter
-1 Trystan, Callous Cultivator
-1 Twilight Mire
-1 Umbral Collar Zealot
-1 Undead Butler
-1 Venerated Stormsinger
-1 Vindictive Vampire
-1 Viridescent Bog
-1 Viscera Seer
-1 Windgrace's Judgment
-1 Winding Way
-1 Woe Strider
-1 Woodland Cemetery
-1 Woodland Chasm
-1 Worm Harvest
+1 Octavia, Living Thesis
+1 Chart a Course
+1 Curate
+1 Deep Analysis
+1 Defy Gravity
+1 Gigadrowse
+1 Illvoi Galeblade
+1 Impulse
+1 Moment of Truth
+1 Obsessive Search
+1 Sleight of Hand
+1 Spectral Sailor
+1 Spyglass Siren
+1 Strategic Planning
+1 Treasure Cruise
+1 Fact or Fiction
+1 Reservoir Kraken
+1 Kiora, the Rising Tide
+1 Nadir Kraken
+1 Redirect
+1 Mission Briefing
+1 Otherworldly Gaze
+1 Shoreline Looter
+1 Thieving Skydiver
+1 Traverse Eternity
+1 Cloud of Faeries
+1 Consider
+1 Talrand, Sky Summoner
+1 Enter the Enigma
+1 Peek
+1 Thought Scour
+1 Whelming Wave
+1 Artful Dodge
+1 Rapid Hybridization
+1 Serum Visions
+1 Frantic Search
+1 High Tide
+1 Leap
+1 Preordain
+1 Wavebreak Hippocamp
+1 Archmage Emeritus
+1 Quiet Speculation
+1 Brainstorm
+1 Careful Study
+1 Ghostly Pilferer
+1 Shadow Rift
+1 Pongify
+1 Ponder
+1 Flow State
+1 Malcolm, Alluring Scoundrel
+1 Archmage of Runes
