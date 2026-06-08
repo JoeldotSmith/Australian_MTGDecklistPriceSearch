@@ -1,300 +1,257 @@
-# Good Games Tcg Decklist Search
+# MTG Decklist Price Search
 
-Decklist Search Good Games Tcg (https://tcg.goodgames.com.au/) from the command line.
+Search for Magic: The Gathering card prices across multiple Australian (and international) vendors from the command line, then calculate the optimal split order to minimise total cost including postage.
+
+**Vendors supported:**
+- [Good Games TCG](https://tcg.goodgames.com.au/) — AUD, $6.50 postage
+- [MTGMate](https://www.mtgmate.com.au/) — AUD, $6.00 postage
+- [Card Kingdom](https://www.cardkingdom.com/) — USD (auto-converted to AUD), ~$10.50 USD postage
+
+## Requirements
+
+No dependencies required other than Python 3 (tested on Python 3.13, should work on most modern versions).
+
+## Setup
+
+Paste your decklist into `decklist.txt`, one card per line in the format:
+``` text
+1 Octavia, Living Thesis
+1 Chart a Course
+1 Curate
+1 Deep Analysis
+1 Defy Gravity
+1 Gigadrowse
+1 Illvoi Galeblade
+```
 
 ## Usage
 
-No dependencies are required other than Python3 (has only been tested on Python 3.13.7 but should work on most versions).
-
-Paste your decklist into the file `decklist.txt` an example decklist is already present.
-Then run the command `python3 searchCards.py` to search for the cards.
-
-## Example Output:
+```bash
+python3 main.py
 ```
-┌                                                                    MTG Card Price Search — Good Games                                                                   ┐
-├──────────────────────────────────────────────────────┬─────────────────────────────────────────────────────────────────────────┬─────────────────────┬───────┬──────────┤
-│ Card Title                                           │ Set                                                                     │ Condition           │ Qty   │    Price │
-├──────────────────────────────────────────────────────┼─────────────────────────────────────────────────────────────────────────┼─────────────────────┼───────┼──────────┤
-│ Hogaak, Arisen Necropolis                            │ Modern Horizons                                                         │ Near Mint           │ 4     │    $2.50 │
-│ Aatchik, Emerald Radian                              │ Aetherdrift                                                             │ Near Mint           │ 17    │    $1.50 │
-│ Accursed Marauder                                    │ Modern Horizons 3                                                       │ Near Mint Foil      │ 1     │    $4.40 │
-│ Arasta of the Endless Web                            │ Commander Legends: Battle for Baldur's Gate                             │ Near Mint           │ 1     │    $1.50 │
-│ Arcane Signet                                        │ Fallout                                                                 │ Near Mint Foil      │ 1     │   $12.80 │
-│ Blanchwood Prowler                                   │ The Brothers' War                                                       │ Near Mint           │ 4     │    $0.50 │
-│ Blighted Woodland                                    │ Battle for Zendikar                                                     │ Near Mint Foil      │ 4     │    $4.90 │
-│ Cache Grab                                           │ Bloomburrow                                                             │ Near Mint           │ 8     │    $0.50 │
-│ Command Tower (Borderless Alternate Art)             │ Commander Masters                                                       │ Near Mint           │ 1     │    $4.40 │
-│ Commune with the Gods                                │ Theros                                                                  │ Near Mint Foil      │ 1     │    $1.00 │
-│ Crawling Sensation                                   │ Tarkir: Dragonstorm Commander                                           │ Near Mint           │ 1     │    $0.80 │
-│ Demon's Disciple                                     │ Commander Masters                                                       │ Near Mint Foil      │ 1     │    $2.50 │
-│ Demonic Embrace (Promo Pack)                         │ Core Set 2021 Promos                                                    │ Near Mint           │ 1     │    $1.50 │
-│ Disciple of Bolas                                    │ Double Masters                                                          │ Near Mint           │ 1     │    $2.30 │
-│ Drag to the Roots                                    │ Duskmourn: House of Horror                                              │ Near Mint Foil      │ 1     │    $0.80 │
-│ Dread Return (Surge Foil)                            │ Warhammer 40,000                                                        │ Near Mint Foil      │ 1     │    $6.10 │
-│ Dread Summons                                        │ Foundations                                                             │ Near Mint           │ 3     │    $1.50 │
-│ Dryad's Revival                                      │ Innistrad: Midnight Hunt                                                │ Near Mint           │ 2     │    $0.80 │
-│ Elvish Mystic (Timeshifted)                          │ Time Spiral Remastered                                                  │ Near Mint           │ 2     │    $8.60 │
-│ Exotic Orchard                                       │ Aetherdrift Commander                                                   │ Near Mint           │ 1     │    $1.50 │
-│ Forest (411) (Retro)                                 │ Dominaria Remastered                                                    │ Near Mint           │ 49    │    $0.50 │
-│ Golgari Grave-Troll                                  │ Ultimate Masters                                                        │ Near Mint           │ 1     │    $3.30 │
-│ Golgari Rot Farm (Borderless Alternate Art)          │ Double Masters 2022                                                     │ Near Mint Foil      │ 16    │    $5.80 │
-│ Hissing Quagmire                                     │ Oath of the Gatewatch                                                   │ Near Mint           │ 5     │    $1.50 │
-│ Jungle Hollow                                        │ Foundations                                                             │ Near Mint           │ 5     │    $0.50 │
-│ Lasyd Prowler                                        │ Tarkir: Dragonstorm                                                     │ Near Mint Foil      │ 8     │    $1.50 │
-│ Llanowar Wastes                                      │ Commander 2021                                                          │ Near Mint           │ 1     │    $1.50 │
-│ Lluwen, Imperfect Naturalist                         │ Lorwyn Eclipsed                                                         │ Near Mint           │ 1     │    $1.50 │
-│ Maelstrom Pulse                                      │ Modern Masters                                                          │ Lightly Played      │ 2     │    $1.20 │
-│ Merciless Executioner                                │ Fate Reforged                                                           │ Near Mint Foil      │ 1     │   $22.50 │
-│ Midnight Tilling                                     │ Lorwyn Eclipsed                                                         │ Near Mint           │ 10    │    $0.50 │
-│ Molt Tender                                          │ Aetherdrift                                                             │ Near Mint           │ 20    │    $0.80 │
-│ Necroblossom Snarl (Extended Art)                    │ Strixhaven: School of Mages                                             │ Near Mint           │ 1     │    $5.20 │
-│ Nyx Weaver                                           │ Journey into Nyx                                                        │ Near Mint           │ 1     │    $0.80 │
-│ Rampant Growth // Life (Normal) [ROS017] (Rosetta)   │                                                                         │ Near Mint           │ 6     │   $13.30 │
-│ Regrowth                                             │ Revised Edition                                                         │ Moderately Played   │ 2     │    $1.40 │
-│ Rogue's Passage (Blueprint)                          │ Secret Lair Drop Promos                                                 │ Near Mint Foil      │ 1     │   $93.20 │
-│ Satyr Wayfinder                                      │ Born of the Gods                                                        │ Near Mint           │ 1     │    $0.50 │
-│ Seedship Broodtender                                 │ Edge of Eternities                                                      │ Near Mint           │ 6     │    $0.80 │
-│ Shamanic Revelation                                  │ Dungeons \u0026 Dragons: Adventures in the Forgotten Realms Commander   │ Near Mint           │ 2     │    $2.00 │
-│ Snow-Covered Swamp                                   │ Modern Horizons                                                         │ Near Mint           │ 51    │    $2.00 │
-│ Sol Ring (Extended Art)                              │ Commander Legends                                                       │ Near Mint           │ 1     │   $11.70 │
-│ Spider Spawning                                      │ Innistrad                                                               │ Near Mint           │ 8     │    $0.80 │
-│ Spry and Mighty                                      │ Lorwyn Eclipsed                                                         │ Near Mint           │ 8     │    $1.50 │
-│ Stitcher's Supplier (Borderless)                     │ Secret Lair Drop Series                                                 │ Near Mint Foil      │ 1     │   $34.10 │
-│ Talisman of Resilience (Surge Foil)                  │ Fallout                                                                 │ Near Mint Foil      │ 1     │   $27.00 │
-│ Temple of Malady                                     │ Core Set 2021                                                           │ Near Mint           │ 1     │    $1.50 │
-│ Tend the Pests                                       │ Strixhaven: School of Mages                                             │ Near Mint           │ 2     │    $0.80 │
-│ Town Greeter                                         │ FINAL FANTASY                                                           │ Near Mint           │ 16    │    $0.50 │
-│ Trystan, Callous Cultivator                          │ Lorwyn Eclipsed                                                         │ Near Mint           │ 3     │    $1.50 │
-│ Twilight Mire                                        │ Eventide                                                                │ Near Mint           │ 9     │    $8.80 │
-│ Undead Butler                                        │ Innistrad: Double Feature                                               │ Near Mint Foil      │ 1     │    $7.30 │
-│ Venerated Stormsinger                                │ Tarkir: Dragonstorm                                                     │ Near Mint           │ 11    │    $0.80 │
-│ Vindictive Vampire                                   │ Ravnica Remastered                                                      │ Near Mint           │ 4     │    $0.80 │
-│ Viridescent Bog                                      │ Modern Horizons 3 Commander                                             │ Near Mint           │ 1     │    $1.50 │
-│ Windgrace's Judgment                                 │ Bloomburrow Commander                                                   │ Near Mint           │ 1     │    $1.50 │
-│ Woe Strider                                          │ Tarkir: Dragonstorm Commander                                           │ Near Mint           │ 1     │    $1.50 │
-│ Woodland Cemetery (Retro)                            │ Dominaria Remastered                                                    │ Near Mint Foil      │ 1     │    $3.30 │
-│ Woodland Chasm                                       │ Kaldheim                                                                │ Near Mint           │ 4     │    $1.10 │
-├──────────────────────────────────────────────────────┼─────────────────────────────────────────────────────────────────────────┼─────────────────────┼───────┼──────────┤
-│                                                      │                                                                         │                     │ Total │  $326.70 │
-└──────────────────────────────────────────────────────┴─────────────────────────────────────────────────────────────────────────┴─────────────────────┴───────┴──────────┘
-└──────────────────────────────────────────────────────┴─────────────────────────────────────────────────────────────────────────┴─────────────────────┴───────┴──────────┘
+## Flags
 
-── Cards Not Found / Out of Stock ──
-  ✗ Arbor Elf
-  ✗ Bastion of Remembrance
-  ✗ Binding the Old Gods
-  ✗ Circle of the Land Druid
-  ✗ Fallen Ideal
-  ✗ Festering Thicket
-  ✗ Fleshbag Marauder
-  ✗ Golgari Signet
-  ✗ Grisly Salvage
-  ✗ Haunted Mire
-  ✗ Izoni, Thousand-Eyed
-  ✗ Korozda Guildmage
-  ✗ Morbid Opportunist
-  ✗ Plaguecrafter
-  ✗ Skull Prophet
-  ✗ Syr Konrad, the Grim
-  ✗ Szat's Will
-  ✗ Tainted Wood
-  ✗ The Binding of the Titans
-  ✗ Umbral Collar Zealot
-  ✗ Viscera Seer
-  ✗ Winding Way
-  ✗ Worm Harvest
+### `--filter-price`
+Only show cards cheaper than the given price in the main table. Cards at or above the threshold are moved to a "Filtered Out" table.
+
+```bash
+python3 main.py --filter-price 5
 ```
 
-## Filtering
-Adding the `--filter-price` flag will filter out cards cheaper than the specified price.
-For example the command `python3 searchCards.py --filter-price 5` will only show cards cheaper than $5, see below.
+### `--filter-diff`
+Only show cards where the difference between the cheapest available price and the cheapest NM price (regardless of stock) is less than the given value. Useful for spotting cards where the only available copy is an expensive variant or damaged copy.
+
+```bash
+python3 main.py --filter-diff 1.50
+```
+
+Filters can be combined:
+
+```bash
+python3 main.py --filter-price 10 --filter-diff 2
+```
+
+### `--open`
+Open the product page for each card in the main (non-filtered) table in your browser. Uses the winning vendor's URL.
+
+```bash
+python3 main.py --open
+```
+
+> **Warning:** This opens one browser tab per card. For large decklists this can open 50+ tabs.
+
+## Example Output
 
 ``` text
-                                                              MTG Card Price Search — Good Games                                                              ┐
-├────────────────────────────────────────────┬─────────────────────────────────────────────────────────────────────────┬─────────────────────┬───────┬─────────┤
-│ Card Title                                 │ Set                                                                     │ Condition           │ Qty   │   Price │
-├────────────────────────────────────────────┼─────────────────────────────────────────────────────────────────────────┼─────────────────────┼───────┼─────────┤
-│ Blanchwood Prowler                         │ The Brothers' War                                                       │ Near Mint           │ 4     │   $0.50 │
-│ Cache Grab                                 │ Bloomburrow                                                             │ Near Mint           │ 8     │   $0.50 │
-│ Forest (411) (Retro)                       │ Dominaria Remastered                                                    │ Near Mint           │ 49    │   $0.50 │
-│ Jungle Hollow                              │ Foundations                                                             │ Near Mint           │ 5     │   $0.50 │
-│ Midnight Tilling                           │ Lorwyn Eclipsed                                                         │ Near Mint           │ 10    │   $0.50 │
-│ Satyr Wayfinder                            │ Born of the Gods                                                        │ Near Mint           │ 1     │   $0.50 │
-│ Town Greeter                               │ FINAL FANTASY                                                           │ Near Mint           │ 16    │   $0.50 │
-│ Crawling Sensation                         │ Tarkir: Dragonstorm Commander                                           │ Near Mint           │ 1     │   $0.80 │
-│ Drag to the Roots                          │ Duskmourn: House of Horror                                              │ Near Mint Foil      │ 1     │   $0.80 │
-│ Dryad's Revival                            │ Innistrad: Midnight Hunt                                                │ Near Mint           │ 2     │   $0.80 │
-│ Molt Tender                                │ Aetherdrift                                                             │ Near Mint           │ 20    │   $0.80 │
-│ Nyx Weaver                                 │ Journey into Nyx                                                        │ Near Mint           │ 1     │   $0.80 │
-│ Seedship Broodtender                       │ Edge of Eternities                                                      │ Near Mint           │ 6     │   $0.80 │
-│ Spider Spawning                            │ Innistrad                                                               │ Near Mint           │ 8     │   $0.80 │
-│ Tend the Pests                             │ Strixhaven: School of Mages                                             │ Near Mint           │ 2     │   $0.80 │
-│ Venerated Stormsinger                      │ Tarkir: Dragonstorm                                                     │ Near Mint           │ 11    │   $0.80 │
-│ Vindictive Vampire                         │ Ravnica Remastered                                                      │ Near Mint           │ 4     │   $0.80 │
-│ Commune with the Gods                      │ Theros                                                                  │ Near Mint Foil      │ 1     │   $1.00 │
-│ Woodland Chasm                             │ Kaldheim                                                                │ Near Mint           │ 4     │   $1.10 │
-│ Maelstrom Pulse                            │ Modern Masters                                                          │ Lightly Played      │ 2     │   $1.20 │
-│ Regrowth                                   │ Revised Edition                                                         │ Moderately Played   │ 2     │   $1.40 │
-│ Aatchik, Emerald Radian                    │ Aetherdrift                                                             │ Near Mint           │ 17    │   $1.50 │
-│ Arasta of the Endless Web                  │ Commander Legends: Battle for Baldur's Gate                             │ Near Mint           │ 1     │   $1.50 │
-│ Demonic Embrace (Promo Pack)               │ Core Set 2021 Promos                                                    │ Near Mint           │ 1     │   $1.50 │
-│ Dread Summons                              │ Foundations                                                             │ Near Mint           │ 3     │   $1.50 │
-│ Exotic Orchard                             │ Aetherdrift Commander                                                   │ Near Mint           │ 1     │   $1.50 │
-│ Hissing Quagmire                           │ Oath of the Gatewatch                                                   │ Near Mint           │ 5     │   $1.50 │
-│ Lasyd Prowler                              │ Tarkir: Dragonstorm                                                     │ Near Mint Foil      │ 8     │   $1.50 │
-│ Llanowar Wastes                            │ Commander 2021                                                          │ Near Mint           │ 1     │   $1.50 │
-│ Lluwen, Imperfect Naturalist               │ Lorwyn Eclipsed                                                         │ Near Mint           │ 1     │   $1.50 │
-│ Spry and Mighty                            │ Lorwyn Eclipsed                                                         │ Near Mint           │ 8     │   $1.50 │
-│ Temple of Malady                           │ Core Set 2021                                                           │ Near Mint           │ 1     │   $1.50 │
-│ Trystan, Callous Cultivator                │ Lorwyn Eclipsed                                                         │ Near Mint           │ 3     │   $1.50 │
-│ Viridescent Bog                            │ Modern Horizons 3 Commander                                             │ Near Mint           │ 1     │   $1.50 │
-│ Windgrace's Judgment                       │ Bloomburrow Commander                                                   │ Near Mint           │ 1     │   $1.50 │
-│ Woe Strider                                │ Tarkir: Dragonstorm Commander                                           │ Near Mint           │ 1     │   $1.50 │
-│ Shamanic Revelation                        │ Dungeons \u0026 Dragons: Adventures in the Forgotten Realms Commander   │ Near Mint           │ 2     │   $2.00 │
-│ Snow-Covered Swamp                         │ Modern Horizons                                                         │ Near Mint           │ 51    │   $2.00 │
-│ Disciple of Bolas                          │ Double Masters                                                          │ Near Mint           │ 1     │   $2.30 │
-│ Hogaak, Arisen Necropolis                  │ Modern Horizons                                                         │ Near Mint           │ 4     │   $2.50 │
-│ Demon's Disciple                           │ Commander Masters                                                       │ Near Mint Foil      │ 1     │   $2.50 │
-│ Golgari Grave-Troll                        │ Ultimate Masters                                                        │ Near Mint           │ 1     │   $3.30 │
-│ Woodland Cemetery (Retro)                  │ Dominaria Remastered                                                    │ Near Mint Foil      │ 1     │   $3.30 │
-│ Accursed Marauder                          │ Modern Horizons 3                                                       │ Near Mint Foil      │ 1     │   $4.40 │
-│ Command Tower (Borderless Alternate Art)   │ Commander Masters                                                       │ Near Mint           │ 1     │   $4.40 │
-│ Blighted Woodland                          │ Battle for Zendikar                                                     │ Near Mint Foil      │ 4     │   $4.90 │
-├────────────────────────────────────────────┼─────────────────────────────────────────────────────────────────────────┼─────────────────────┼───────┼─────────┤
-│                                            │                                                                         │                     │ Total │  $70.30 │
-└────────────────────────────────────────────┴─────────────────────────────────────────────────────────────────────────┴─────────────────────┴───────┴─────────┘
 
-┌                                                   Filtered Out (≥ $5.00)                                                   ┐
-├──────────────────────────────────────────────────────┬───────────────────────────────┬──────────────────┬───────┬──────────┤
-│ Card Title                                           │ Set                           │ Condition        │ Qty   │    Price │
-├──────────────────────────────────────────────────────┼───────────────────────────────┼──────────────────┼───────┼──────────┤
-│ Necroblossom Snarl (Extended Art)                    │ Strixhaven: School of Mages   │ Near Mint        │ 1     │    $5.20 │
-│ Golgari Rot Farm (Borderless Alternate Art)          │ Double Masters 2022           │ Near Mint Foil   │ 16    │    $5.80 │
-│ Dread Return (Surge Foil)                            │ Warhammer 40,000              │ Near Mint Foil   │ 1     │    $6.10 │
-│ Undead Butler                                        │ Innistrad: Double Feature     │ Near Mint Foil   │ 1     │    $7.30 │
-│ Elvish Mystic (Timeshifted)                          │ Time Spiral Remastered        │ Near Mint        │ 2     │    $8.60 │
-│ Twilight Mire                                        │ Eventide                      │ Near Mint        │ 9     │    $8.80 │
-│ Sol Ring (Extended Art)                              │ Commander Legends             │ Near Mint        │ 1     │   $11.70 │
-│ Arcane Signet                                        │ Fallout                       │ Near Mint Foil   │ 1     │   $12.80 │
-│ Rampant Growth // Life (Normal) [ROS017] (Rosetta)   │                               │ Near Mint        │ 6     │   $13.30 │
-│ Merciless Executioner                                │ Fate Reforged                 │ Near Mint Foil   │ 1     │   $22.50 │
-│ Talisman of Resilience (Surge Foil)                  │ Fallout                       │ Near Mint Foil   │ 1     │   $27.00 │
-│ Stitcher's Supplier (Borderless)                     │ Secret Lair Drop Series       │ Near Mint Foil   │ 1     │   $34.10 │
-│ Rogue's Passage (Blueprint)                          │ Secret Lair Drop Promos       │ Near Mint Foil   │ 1     │   $93.20 │
-├──────────────────────────────────────────────────────┼───────────────────────────────┼──────────────────┼───────┼──────────┤
-│                                                      │                               │                  │ Total │  $256.40 │
-└──────────────────────────────────────────────────────┴───────────────────────────────┴──────────────────┴───────┴──────────┘
+Total cards: 51
 
-── Cards Not Found / Out of Stock ──
-  ✗ Arbor Elf
-  ✗ Bastion of Remembrance
-  ✗ Binding the Old Gods
-  ✗ Circle of the Land Druid
-  ✗ Fallen Ideal
-  ✗ Festering Thicket
-  ✗ Fleshbag Marauder
-  ✗ Golgari Signet
-  ✗ Grisly Salvage
-  ✗ Haunted Mire
-  ✗ Izoni, Thousand-Eyed
-  ✗ Korozda Guildmage
-  ✗ Morbid Opportunist
-  ✗ Plaguecrafter
-  ✗ Skull Prophet
-  ✗ Syr Konrad, the Grim
-  ✗ Szat's Will
-  ✗ Tainted Wood
-  ✗ The Binding of the Titans
-  ✗ Umbral Collar Zealot
-  ✗ Viscera Seer
-  ✗ Winding Way
-  ✗ Worm Harvest
+  [CardKingdom] Fetching 51 cards (bulk)...   [CardKingdom] USD→AUD rate: 1.4197 ✓  (51 found)
+
+  [GoodGames] Searching: Octavia, Living Thesis... ✓
+  [GoodGames] Searching: Chart a Course... ✓
+  [GoodGames] Searching: Curate... ✓
+  [GoodGames] Searching: Deep Analysis... ✓
+  [GoodGames] Searching: Defy Gravity... ✓
+  [GoodGames] Searching: Gigadrowse... not found
+  [GoodGames] Searching: Illvoi Galeblade... ✓
+  [GoodGames] Searching: Impulse... ✓
+  [GoodGames] Searching: Moment of Truth... ✓
+  [GoodGames] Searching: Obsessive Search... ✓
+  [GoodGames] Searching: Sleight of Hand... ✓
+  [GoodGames] Searching: Spectral Sailor... ✓
+  [GoodGames] Searching: Spyglass Siren... ✓
+  [GoodGames] Searching: Strategic Planning... ✓
+  [GoodGames] Searching: Treasure Cruise... ✓
+  [GoodGames] Searching: Fact or Fiction... ✓
+  [GoodGames] Searching: Reservoir Kraken... ✓
+  [GoodGames] Searching: Kiora, the Rising Tide... not found
+  [GoodGames] Searching: Nadir Kraken... not found
+  [GoodGames] Searching: Redirect... ✓
+  [GoodGames] Searching: Mission Briefing... ✓
+  [GoodGames] Searching: Otherworldly Gaze... ✓
+  [GoodGames] Searching: Shoreline Looter... not found
+  [GoodGames] Searching: Thieving Skydiver... ✓
+  [GoodGames] Searching: Traverse Eternity... not found
+  [GoodGames] Searching: Cloud of Faeries... ✓
+  [GoodGames] Searching: Consider... ✓
+  [GoodGames] Searching: Talrand, Sky Summoner... ✓
+  [GoodGames] Searching: Enter the Enigma... not found
+  [GoodGames] Searching: Peek... ✓
+  [GoodGames] Searching: Thought Scour... not found
+  [GoodGames] Searching: Whelming Wave... ✓
+  [GoodGames] Searching: Artful Dodge... not found
+  [GoodGames] Searching: Rapid Hybridization... not found
+  [GoodGames] Searching: Serum Visions... ✓
+  [GoodGames] Searching: Frantic Search... not found
+  [GoodGames] Searching: High Tide... ✓
+  [GoodGames] Searching: Leap... ✓
+  [GoodGames] Searching: Preordain... ✓
+  [GoodGames] Searching: Wavebreak Hippocamp... not found
+  [GoodGames] Searching: Archmage Emeritus... ✓
+  [GoodGames] Searching: Quiet Speculation... not found
+  [GoodGames] Searching: Brainstorm... ✓
+  [GoodGames] Searching: Careful Study... ✓
+  [GoodGames] Searching: Ghostly Pilferer... ✓
+  [GoodGames] Searching: Shadow Rift... not found
+  [GoodGames] Searching: Pongify... ✓
+  [GoodGames] Searching: Ponder... ✓
+  [GoodGames] Searching: Flow State... not found
+  [GoodGames] Searching: Malcolm, Alluring Scoundrel... not found
+  [GoodGames] Searching: Archmage of Runes... ✓
+
+  [MTGMate] Fetching 51 cards (bulk)... ✓  (42 found)
+
+┌                                                             MTG Card Price Search — GoodGames + MTGMate (51/51 cards)                                                              ┐
+├───────────────────────────────┬──────────────────────────────────────────────┬─────────────────────┬───────┬──────────────────────┬───────────────┬───────────┬────────────────────┤
+│ Card Title                    │ Set                                          │ Condition           │ Qty   │ Cheapest Available   │ Cheapest NM   │ Diff      │             Source │
+├───────────────────────────────┼──────────────────────────────────────────────┼─────────────────────┼───────┼──────────────────────┼───────────────┼───────────┼────────────────────┤
+│ Gigadrowse                    │ Guildpact                                    │ Lightly Played      │ 11    │ $0.40                │ $0.50         │ -$0.10    │        cardkingdom │
+│ Illvoi Galeblade              │ Edge of Eternities                           │ Lightly Played      │ 2     │ $0.40                │ $0.50         │ -$0.10    │   cardkingdom (+2) │
+│ Obsessive Search              │ Torment                                      │ Lightly Played      │ 6     │ $0.40                │ $0.50         │ -$0.10    │   cardkingdom (+2) │
+│ Chart a Course                │ Ixalan                                       │ Lightly Played      │ 1     │ $0.44                │ $0.80         │ -$0.36    │   cardkingdom (+2) │
+│ Defy Gravity                  │ Judgment                                     │ Lightly Played      │ 7     │ $0.44                │ $0.50         │ -$0.06    │   cardkingdom (+1) │
+│ Curate                        │ Strixhaven: School of Mages                  │ Near Mint           │ 9     │ $0.50                │ $0.50         │ +$0.00    │     goodgames (+2) │
+│ Deep Analysis                 │ Dominaria Remastered                         │ Near Mint           │ 10    │ $0.50                │ $0.40         │ +$0.10    │     goodgames (+2) │
+│ Impulse                       │ Dominaria Remastered                         │ Near Mint           │ 15    │ $0.50                │ $0.50         │ +$0.00    │     goodgames (+2) │
+│ Moment of Truth               │ March of the Machine                         │ Near Mint           │ 4     │ $0.50                │ $0.50         │ +$0.00    │     goodgames (+2) │
+│ Sleight of Hand               │ Ninth Edition                                │ Moderately Played   │ 1     │ $0.50                │ $0.50         │ +$0.00    │     goodgames (+2) │
+│ Spectral Sailor               │ Core Set 2020                                │ Near Mint           │ 8     │ $0.50                │ $0.80         │ -$0.30    │   cardkingdom (+2) │
+│ Spyglass Siren                │ The Lost Caverns of Ixalan                   │ Near Mint           │ 74    │ $0.50                │ $0.80         │ -$0.30    │   cardkingdom (+2) │
+│ Strategic Planning            │ Commander Legends                            │ Near Mint           │ 7     │ $0.50                │ $0.50         │ +$0.00    │     goodgames (+2) │
+│ Treasure Cruise               │ Khans of Tarkir                              │ Near Mint           │ 106   │ $0.50                │ $0.50         │ +$0.00    │   cardkingdom (+2) │
+│ Cloud of Faeries              │ Dominaria Remastered                         │ Near Mint           │ 13    │ $0.50                │ $0.50         │ +$0.00    │     goodgames (+2) │
+│ Daring Leap                   │ Planeshift                                   │ Near Mint           │ 16    │ $0.50                │ $0.50         │ +$0.00    │     goodgames (+1) │
+│ Fact or Fiction               │ Commander 2015                               │ Lightly Played      │ 1     │ $0.55                │ $0.80         │ -$0.25    │   cardkingdom (+2) │
+│ Redirect                      │ 2012 Core Set                                │ Lightly Played      │ 2     │ $0.55                │ $1.50         │ -$0.95    │   cardkingdom (+2) │
+│ Reservoir Kraken              │ Promo Pack                                   │ Near Mint           │ 8     │ $0.70                │ $1.50         │ -$0.80    │   cardkingdom (+2) │
+│ Nadir Kraken                  │ Promo Pack                                   │ Lightly Played      │ 2     │ $0.78                │ $1.50         │ -$0.72    │        cardkingdom │
+│ Otherworldly Gaze             │ Innistrad: Midnight Hunt                     │ Lightly Played      │ 2     │ $0.78                │ $0.50         │ +$0.28    │   cardkingdom (+2) │
+│ Careful Consideration         │ Time Spiral                                  │ Near Mint           │ 10    │ $0.80                │ $0.80         │ +$0.00    │     goodgames (+2) │
+│ Kiora, the Rising Tide        │ Foundations                                  │ Near Mint           │ 44    │ $0.84                │ $1.50         │ -$0.66    │   cardkingdom (+1) │
+│ Mission Briefing              │ Guilds of Ravnica                            │ Near Mint           │ 17    │ $0.98                │ $1.50         │ -$0.52    │   cardkingdom (+2) │
+│ Shoreline Looter              │ Bloomburrow                                  │ Near Mint           │ 65    │ $0.98                │ $0.80         │ +$0.18    │   cardkingdom (+1) │
+│ Thieving Skydiver             │ The Lost Caverns of Ixalan Commander Decks   │ Near Mint           │ 35    │ $0.98                │ $1.50         │ -$0.52    │   cardkingdom (+2) │
+│ Traverse Eternity             │ Universes Beyond: Doctor Who                 │ Near Mint           │ 13    │ $0.98                │ $1.50         │ -$0.52    │   cardkingdom (+1) │
+│ Talrand, Sky Summoner         │ Commander 2020                               │ Near Mint           │ 25    │ $1.12                │ $1.50         │ -$0.38    │   cardkingdom (+2) │
+│ Whelming Wave                 │ Born of the Gods                             │ Lightly Played      │ 20    │ $1.12                │ $1.50         │ -$0.38    │   cardkingdom (+2) │
+│ Enter the Enigma              │ Duskmourn: House of Horror                   │ Near Mint           │ 132   │ $1.41                │ $0.80         │ +$0.61    │   cardkingdom (+1) │
+│ Peek                          │ 10th Edition                                 │ Near Mint           │ 5     │ $1.41                │ $0.70         │ +$0.71    │   cardkingdom (+2) │
+│ Thought Scour                 │ Iconic Masters                               │ Near Mint           │ 1     │ $1.41                │ $0.80         │ +$0.61    │   cardkingdom (+1) │
+│ Artful Dodge                  │ Dark Ascension                               │ Lightly Played      │ 40    │ $1.46                │ $1.10         │ +$0.36    │        cardkingdom │
+│ Octavia, Living Thesis        │ Commander 2021                               │ Near Mint           │ 1     │ $1.50                │ $1.50         │ +$0.00    │     goodgames (+2) │
+│ Serum Visions                 │ Fifth Dawn                                   │ Lightly Played      │ 16    │ $1.69                │ $2.00         │ -$0.31    │   cardkingdom (+2) │
+│ High Tide                     │ Fallen Empires                               │ Lightly Played      │ 30    │ $1.69                │ $1.80         │ -$0.11    │   cardkingdom (+2) │
+│ Preordain                     │ 2011 Core Set                                │ Lightly Played      │ 84    │ $1.69                │ $1.00         │ +$0.69    │   cardkingdom (+2) │
+│ Rapid Hybridization           │ Bloomburrow Commander Decks                  │ Near Mint           │ 142   │ $1.83                │ $1.10         │ +$0.73    │        cardkingdom │
+│ Frantic Search                │ Commander 2020                               │ Near Mint           │ 4     │ $2.12                │ $1.00         │ +$1.12    │   cardkingdom (+1) │
+│ Wavebreak Hippocamp           │ Foundations Jumpstart                        │ Near Mint           │ 32    │ $2.12                │ $1.50         │ +$0.62    │   cardkingdom (+1) │
+│ Quiet Speculation             │ Eternal Masters                              │ Lightly Played      │ 13    │ $2.26                │ $0.80         │ +$1.46    │        cardkingdom │
+│ Archmage Emeritus             │ Final Fantasy Commander Decks                │ Near Mint           │ 193   │ $2.83                │ $1.50         │ +$1.33    │   cardkingdom (+2) │
+│ Careful Study                 │ Odyssey                                      │ Moderately Played   │ 9     │ $2.97                │ $6.70         │ -$3.73    │   cardkingdom (+1) │
+│ Shadow Rift                   │ Tempest                                      │ Moderately Played   │ 3     │ $2.97                │ N/A           │ +$0.00    │        cardkingdom │
+│ Ghostly Pilferer              │ Streets of New Capenna Commander Decks       │ Lightly Played      │ 1     │ $3.17                │ $4.20         │ -$1.03    │   cardkingdom (+2) │
+│ Brainstorm                    │ 5th Edition                                  │ Lightly Played      │ 21    │ $3.39                │ $3.70         │ -$0.31    │   cardkingdom (+2) │
+│ Pongify                       │ Mystery Booster/The List                     │ Near Mint           │ 11    │ $4.24                │ $3.70         │ +$0.54    │   cardkingdom (+2) │
+│ Ponder                        │ 2010 Core Set                                │ Lightly Played      │ 31    │ $5.10                │ $21.30        │ -$16.20   │   cardkingdom (+2) │
+│ Flow State                    │ Secrets of Strixhaven                        │ Near Mint           │ 772   │ $5.66                │ $5.40         │ +$0.26    │   cardkingdom (+1) │
+│ Malcolm, Alluring Scoundrel   │ Promo Pack                                   │ Near Mint           │ 8     │ $5.66                │ $6.40         │ -$0.74    │   cardkingdom (+1) │
+│ Archmage of Runes             │ Foundations                                  │ Near Mint           │ 1     │ $6.20                │ $6.20         │ +$0.00    │     goodgames (+2) │
+├───────────────────────────────┼──────────────────────────────────────────────┼─────────────────────┼───────┼──────────────────────┼───────────────┼───────────┼────────────────────┤
+│                               │                                              │                     │ Total │ $81.52               │ $98.40        │           │                    │
+└───────────────────────────────┴──────────────────────────────────────────────┴─────────────────────┴───────┴──────────────────────┴───────────────┴───────────┴────────────────────┘
+
+════════════════════════════════════════════════════════════
+  OPTIMAL ORDER  —  total incl. postage: $100.56
+════════════════════════════════════════════════════════════
+
+┌                                           Order from Cardkingdom (51 cards)                                           ┐
+├───────────────────────────────┬──────────────────────────────────────────────┬─────────────────────┬────────┬─────────┤
+│ Card Title                    │ Set                                          │ Condition           │ Qty    │   Price │
+├───────────────────────────────┼──────────────────────────────────────────────┼─────────────────────┼────────┼─────────┤
+│ Obsessive Search              │ Torment                                      │ Lightly Played      │ 6      │   $0.40 │
+│ Gigadrowse                    │ Guildpact                                    │ Lightly Played      │ 11     │   $0.40 │
+│ Illvoi Galeblade              │ Edge of Eternities                           │ Lightly Played      │ 2      │   $0.40 │
+│ Chart a Course                │ Ixalan                                       │ Lightly Played      │ 1      │   $0.44 │
+│ Defy Gravity                  │ Judgment                                     │ Lightly Played      │ 7      │   $0.44 │
+│ Spyglass Siren                │ The Lost Caverns of Ixalan                   │ Near Mint           │ 74     │   $0.50 │
+│ Spectral Sailor               │ Core Set 2020                                │ Near Mint           │ 8      │   $0.50 │
+│ Impulse                       │ Battlebond                                   │ Near Mint           │ 15     │   $0.50 │
+│ Deep Analysis                 │ Commander 2019                               │ Near Mint           │ 15     │   $0.50 │
+│ Strategic Planning            │ Commander 2013                               │ Near Mint           │ 8      │   $0.50 │
+│ Sleight of Hand               │ Secrets of Strixhaven Mystical Archive       │ Near Mint           │ 2029   │   $0.50 │
+│ Treasure Cruise               │ Khans of Tarkir                              │ Near Mint           │ 106    │   $0.50 │
+│ Moment of Truth               │ March of the Machine                         │ Near Mint           │ 34     │   $0.50 │
+│ Curate                        │ Strixhaven: School of Mages                  │ Near Mint           │ 42     │   $0.50 │
+│ Fact or Fiction               │ Commander 2015                               │ Lightly Played      │ 1      │   $0.55 │
+│ Redirect                      │ 2012 Core Set                                │ Lightly Played      │ 2      │   $0.55 │
+│ Reservoir Kraken              │ Promo Pack                                   │ Near Mint           │ 8      │   $0.70 │
+│ Otherworldly Gaze             │ Innistrad: Midnight Hunt                     │ Lightly Played      │ 2      │   $0.78 │
+│ Nadir Kraken                  │ Promo Pack                                   │ Lightly Played      │ 2      │   $0.78 │
+│ Kiora, the Rising Tide        │ Foundations                                  │ Near Mint           │ 44     │   $0.84 │
+│ Mission Briefing              │ Guilds of Ravnica                            │ Near Mint           │ 17     │   $0.98 │
+│ Shoreline Looter              │ Bloomburrow                                  │ Near Mint           │ 65     │   $0.98 │
+│ Thieving Skydiver             │ The Lost Caverns of Ixalan Commander Decks   │ Near Mint           │ 35     │   $0.98 │
+│ Traverse Eternity             │ Universes Beyond: Doctor Who                 │ Near Mint           │ 13     │   $0.98 │
+│ Cloud of Faeries              │ Dominaria Remastered                         │ Near Mint           │ 51     │   $1.12 │
+│ Whelming Wave                 │ Born of the Gods                             │ Lightly Played      │ 20     │   $1.12 │
+│ Consider                      │ Innistrad: Midnight Hunt                     │ Lightly Played      │ 11     │   $1.12 │
+│ Talrand, Sky Summoner         │ Commander 2020                               │ Near Mint           │ 25     │   $1.12 │
+│ Thought Scour                 │ Iconic Masters                               │ Near Mint           │ 1      │   $1.41 │
+│ Enter the Enigma              │ Duskmourn: House of Horror                   │ Near Mint           │ 132    │   $1.41 │
+│ Peek                          │ 10th Edition                                 │ Near Mint           │ 5      │   $1.41 │
+│ Artful Dodge                  │ Dark Ascension                               │ Lightly Played      │ 40     │   $1.46 │
+│ Leap                          │ Stronghold                                   │ Moderately Played   │ 14     │   $1.48 │
+│ Preordain                     │ 2011 Core Set                                │ Lightly Played      │ 84     │   $1.69 │
+│ Serum Visions                 │ Fifth Dawn                                   │ Lightly Played      │ 16     │   $1.69 │
+│ High Tide                     │ Fallen Empires                               │ Lightly Played      │ 30     │   $1.69 │
+│ Rapid Hybridization           │ Bloomburrow Commander Decks                  │ Near Mint           │ 142    │   $1.83 │
+│ Octavia, Living Thesis        │ Commander 2021                               │ Lightly Played      │ 1      │   $2.03 │
+│ Frantic Search                │ Commander 2020                               │ Near Mint           │ 4      │   $2.12 │
+│ Wavebreak Hippocamp           │ Foundations Jumpstart                        │ Near Mint           │ 32     │   $2.12 │
+│ Quiet Speculation             │ Eternal Masters                              │ Lightly Played      │ 13     │   $2.26 │
+│ Archmage Emeritus             │ Final Fantasy Commander Decks                │ Near Mint           │ 193    │   $2.83 │
+│ Careful Study                 │ Odyssey                                      │ Moderately Played   │ 9      │   $2.97 │
+│ Shadow Rift                   │ Tempest                                      │ Moderately Played   │ 3      │   $2.97 │
+│ Ghostly Pilferer              │ Streets of New Capenna Commander Decks       │ Lightly Played      │ 1      │   $3.17 │
+│ Brainstorm                    │ 5th Edition                                  │ Lightly Played      │ 21     │   $3.39 │
+│ Pongify                       │ Mystery Booster/The List                     │ Near Mint           │ 11     │   $4.24 │
+│ Ponder                        │ 2010 Core Set                                │ Lightly Played      │ 31     │   $5.10 │
+│ Flow State                    │ Secrets of Strixhaven                        │ Near Mint           │ 772    │   $5.66 │
+│ Malcolm, Alluring Scoundrel   │ Promo Pack                                   │ Near Mint           │ 8      │   $5.66 │
+│ Archmage of Runes             │ Foundations                                  │ Near Mint           │ 152    │   $7.79 │
+├───────────────────────────────┼──────────────────────────────────────────────┼─────────────────────┼────────┼─────────┤
+│                               │                                              │                     │ Cards  │  $85.56 │
+│                               │                                              │                     │ Post   │  $15.00 │
+├───────────────────────────────┼──────────────────────────────────────────────┼─────────────────────┼────────┼─────────┤
+│                               │                                              │                     │ Total  │ $100.56 │
+└───────────────────────────────┴──────────────────────────────────────────────┴─────────────────────┴────────┴─────────┘
 ```
 
 
+## Notes
 
-## Opening Results
-Adding the `--open` flag will open each result that is available and is not filtered out in the browser.
-
-For example the command `python3 searchCards.py --open` will open each result in the browser and so will `python3 searchCards.py --filter-price 5 --open`.
-
-[!WARNING]: This will open a browser window for each result, so if you have 100 results found it will open 100 browser windows.
-
-
-## Filter Difference
-
-Adding the `--filter-diff` flag will filter out cards cheaper than the difference between the cheapest available price and the cheapest price regardless of availability.
-For example the command `python3 searchCards.py --filter-diff 1.50` will only show cards where the difference is less than $1.50, see below for example output.
-
-```
-┌                                                          MTG Card Price Search — Good Games (23/52 cards)                                                         ┐
-├──────────────────────────────┬───────────────────────────────────────────────┬──────────────────┬───────┬──────────────────────┬───────────────────────┬──────────┤
-│ Card Title                   │ Set                                           │ Condition        │ Qty   │ Cheapest Available   │ Cheapest Regardless   │     Diff │
-├──────────────────────────────┼───────────────────────────────────────────────┼──────────────────┼───────┼──────────────────────┼───────────────────────┼──────────┤
-│ Basal Thrull (Kaja Foglio)   │ Fallen Empires                                │ Near Mint        │ 1     │ $0.50                │ $0.50                 │   +$0.00 │
-│ Bloodflow Connoisseur        │ Double Masters 2022                           │ Near Mint        │ 2     │ $0.50                │ $0.50                 │   +$0.00 │
-│ Cadaver Imp                  │ Commander Masters                             │ Near Mint        │ 17    │ $0.50                │ $0.50                 │   +$0.00 │
-│ Corpse Blockade              │ Gatecrash                                     │ Near Mint        │ 5     │ $0.50                │ $0.50                 │   +$0.00 │
-│ Dark Privilege               │ Visions                                       │ Near Mint        │ 1     │ $0.50                │ $0.50                 │   +$0.00 │
-│ Eaten Alive                  │ Innistrad Remastered                          │ Near Mint        │ 9     │ $0.50                │ $0.50                 │   +$0.00 │
-│ Novice Occultist             │ Innistrad: Double Feature                     │ Near Mint        │ 13    │ $0.50                │ $0.50                 │   +$0.00 │
-│ Pilgrim's Eye                │ Commander Masters                             │ Near Mint        │ 29    │ $0.50                │ $0.50                 │   +$0.00 │
-│ Skyscanner                   │ Core Set 2019                                 │ Near Mint        │ 4     │ $0.50                │ $0.50                 │   +$0.00 │
-│ Blood Petal Celebrant        │ Innistrad Remastered                          │ Near Mint        │ 12    │ $0.50                │ $0.50                 │   +$0.00 │
-│ Bone Shredder                │ Modern Horizons 2                             │ Near Mint        │ 6     │ $0.80                │ $0.80                 │   +$0.00 │
-│ Skullport Merchant           │ Commander Legends: Battle for Baldur's Gate   │ Near Mint        │ 11    │ $0.80                │ $0.80                 │   +$0.00 │
-│ Valgavoth's Faithful         │ Duskmourn: House of Horror                    │ Near Mint        │ 12    │ $0.80                │ $0.80                 │   +$0.00 │
-│ Vampiric Rites               │ Wilds of Eldraine: Enchanting Tales           │ Near Mint        │ 5     │ $0.80                │ $0.80                 │   +$0.00 │
-│ Vindictive Vampire           │ Ravnica Remastered                            │ Near Mint        │ 4     │ $0.80                │ $0.80                 │   +$0.00 │
-│ Ornithopter of Paradise      │ Modern Horizons 2                             │ Near Mint        │ 1     │ $1.20                │ $0.90                 │   +$0.30 │
-│ Eliminate the Competition    │ Kaladesh                                      │ Near Mint        │ 20    │ $1.50                │ $1.50                 │   +$0.00 │
-│ Woe Strider                  │ Theros Beyond Death                           │ Near Mint Foil   │ 1     │ $1.50                │ $1.50                 │   +$0.00 │
-│ Marionette Apprentice        │ Modern Horizons 3                             │ Near Mint        │ 2     │ $2.40                │ $2.40                 │   +$0.00 │
-│ Desecrated Tomb              │ Core Set 2019                                 │ Near Mint        │ 4     │ $3.10                │ $3.10                 │   +$0.00 │
-│ Soldevi Adnate (One Eye)     │ Alliances                                     │ Near Mint        │ 1     │ $3.30                │ $2.80                 │   +$0.50 │
-│ Champion's Helm              │ Commander Masters                             │ Near Mint        │ 1     │ $3.30                │ $2.70                 │   +$0.60 │
-│ Priest of Forgotten Gods     │ Ravnica Allegiance                            │ Near Mint        │ 1     │ $5.80                │ $4.60                 │   +$1.20 │
-├──────────────────────────────┼───────────────────────────────────────────────┼──────────────────┼───────┼──────────────────────┼───────────────────────┼──────────┤
-│                              │                                               │                  │ Total │ $31.10               │                $28.50 │
-└──────────────────────────────┴───────────────────────────────────────────────┴──────────────────┴───────┴──────────────────────┴───────────────────────┴──────────┘
-
-┌                                                      Filtered Out (6/52 cards)                                                      ┐
-├──────────────────────┬───────────────────────┬──────────────────┬───────┬──────────────────────┬───────────────────────┬────────────┤
-│ Card Title           │ Set                   │ Condition        │ Qty   │ Cheapest Available   │ Cheapest Regardless   │       Diff │
-├──────────────────────┼───────────────────────┼──────────────────┼───────┼──────────────────────┼───────────────────────┼────────────┤
-│ Perilous Myr         │ Scars of Mirrodin     │ Near Mint Foil   │ 1     │ $2.40                │ $0.50                 │     +$1.90 │
-│ Leaden Myr           │ Scars of Mirrodin     │ Near Mint        │ 5     │ $5.00                │ $0.50                 │     +$4.50 │
-│ Carrion Feeder       │ Scourge               │ Near Mint        │ 5     │ $8.60                │ $1.50                 │     +$7.10 │
-│ Zulaport Cutthroat   │ Battle for Zendikar   │ Near Mint Foil   │ 3     │ $12.30               │ $2.90                 │     +$9.40 │
-│ Darksteel Plate      │ Mirrodin Besieged     │ Near Mint        │ 3     │ $16.10               │ $9.50                 │     +$6.60 │
-│ Lightning Greaves    │ Kaladesh Inventions   │ Near Mint Foil   │ 3     │ $437.60              │ $8.90                 │   +$428.70 │
-├──────────────────────┼───────────────────────┼──────────────────┼───────┼──────────────────────┼───────────────────────┼────────────┤
-│                      │                       │                  │ Total │ $482.00              │                $23.80 │
-└──────────────────────┴───────────────────────┴──────────────────┴───────┴──────────────────────┴───────────────────────┴────────────┘
-
-── Cards Not Found / Out of Stock [23/52] ──
-1 Bloodthrone Vampire
-1 Disciple of Perdition
-1 Dusk Legion Zealot
-1 Dutiful Attendant
-1 Kalastria Healer
-1 Lampad of Death's Vigil
-1 Hedron Crawler
-1 Serrated Scorpion
-1 Tragic Slip
-1 Butcher of Malakir
-1 Bastion of Remembrance
-1 Deadly Dispute
-1 Greedy Freebooter
-1 Dockside Chef
-1 Shambling Ghast
-1 Big Game Hunter
-1 Viscera Seer
-1 Victimize
-1 Plumb the Forbidden
-1 Reckoner's Bargain
-1 Pitiless Plunderer
-1 Gift of Doom
-1 Blight Mound
-```
-
+- Card Kingdom prices are in USD and are converted to AUD at the live exchange rate fetched at runtime (falls back to 1.58 if the rate fetch fails).
+- The optimal order calculation tries all combinations of vendors and picks the split that minimises total card cost plus postage. With three vendors this is 7 combinations; adding more vendors scales as `2^N - 1`.
+- Cards filtered out by `--filter-price` or `--filter-diff`, and cards not found on any vendor, are excluded from the optimal order calculation.
+- Good Games results are fetched one card at a time; MTGMate and Card Kingdom use a single bulk request each.
