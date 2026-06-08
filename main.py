@@ -18,21 +18,14 @@ POSTAGE = {
 
 def optimise_order(
     cards: list[str],
-    gg_results: dict[str, CardResult],
-    mm_results: dict[str, CardResult], 
-    ck_results: dict[str, CardResult],
-    excluded_cards: set[str],  # cards filtered out or not found — skip these
+    vendor_results: dict[str, dict[str, CardResult]],
+    excluded_cards: set[str],
 ) -> None:
     """
     Find the cheapest combination of vendors (including postage) to source
     as many of the remaining cards as possible.
     Prints a breakdown table per vendor for the best solution found.
     """
-    vendor_results = {
-        "goodgames": gg_results,
-        "mtgmate":   mm_results,
-        "cardkingdom": ck_results,
-    }
     vendor_names = list(vendor_results.keys())
 
     # Only consider cards that are actually purchaseable
@@ -315,22 +308,35 @@ def main():
     parser.add_argument("--filter-price", type=float, default=None)
     parser.add_argument("--filter-diff",  type=float, default=None)
     parser.add_argument("--open", action="store_true")
+    parser.add_argument(
+        "--ignore-vendor",
+        nargs="+",
+        choices=["ck", "gg", "mm"],
+        default=[],
+        metavar="VENDOR",
+        help="Vendors to ignore: ck, gg, mm",
+    )
     args = parser.parse_args()
 
     cards = get_cards("decklist.txt")
     print(f"Total cards: {len(cards)}\n")
 
-    ck_results = cardkingdom.fetch_all(cards)
+    ck_results = cardkingdom.fetch_all(cards) if "ck" not in args.ignore_vendor else {}
     print()
-    gg_results, gg_nm = goodgames.fetch_all(cards)
+    gg_results, gg_nm = goodgames.fetch_all(cards) if "gg" not in args.ignore_vendor else ({}, {})
     print()
-    mm_results = mtgmate.fetch_all(cards)
+    mm_results = mtgmate.fetch_all(cards) if "mm" not in args.ignore_vendor else {}
+
+    VENDOR_ALIASES = {"gg": "goodgames", "mm": "mtgmate", "ck": "cardkingdom"}
+
+    ignored = {VENDOR_ALIASES[v] for v in args.ignore_vendor}
 
     vendor_results = {
         "goodgames":   gg_results,
         "mtgmate":     mm_results,
         "cardkingdom": ck_results,
     }
+    vendor_results = {k: v for k, v in vendor_results.items() if k not in ignored}
 
     rows, not_found = merge(cards, vendor_results, gg_nm)
     main_rows, over_rows = apply_filters(rows, args.filter_price, args.filter_diff)
@@ -355,7 +361,7 @@ def main():
     if args.filter_price is not None or args.filter_diff is not None:
         excluded |= {r["title"].lower() for r in over_rows}
 
-    optimise_order(cards, gg_results, mm_results, ck_results, excluded)
+    optimise_order(cards, vendor_results, excluded)
 
 
 if __name__ == "__main__":

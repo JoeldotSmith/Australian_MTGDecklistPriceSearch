@@ -45,6 +45,13 @@ Only show cards where the difference between the cheapest available price and th
 python3 main.py --filter-diff 1.50
 ```
 
+### `--ignore-vendor`
+Exclude one or more vendors from the search entirely. Accepts `ck` (Card Kingdom), `gg` (Good Games), and `mm` (MTGMate). Ignored vendors are skipped at the network level and excluded from price comparison and optimal order calculation.
+```bash
+python3 main.py --ignore-vendor ck
+python3 main.py --ignore-vendor ck gg
+```
+
 Filters can be combined:
 
 ```bash
